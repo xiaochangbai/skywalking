@@ -20,6 +20,8 @@
   in `no-init` mode.
 * Make sure instance list ordered in TTL processor to avoid TTL timer never runs.
 * Support monitoring PostgreSQL slow SQLs.
+* [**Breaking Change**] Support sharding MySQL database instances and tables by [Shardingsphere-Proxy](https://shardingsphere.apache.org/document/current/en/overview/#shardingsphere-proxy).
+  SQL-Database requires removing tables `log_tag/segment_tag/zipkin_query` before OAP starts, if bump up from previous releases.
 * Fix meter functions `avgHistogram`, `avgHistogramPercentile`, `avgLabeled`, `sumHistogram` having data conflict when
   downsampling.
 * Do sorting `readLabeledMetricsValues` result forcedly in case the storage(database) doesn't return data consistent
@@ -27,6 +29,16 @@
 * Fix the wrong watch semantics in Kubernetes watchers, which causes heavy traffic to API server in some Kubernetes clusters,
   we should use `Get State and Start at Most Recent` semantic instead of `Start at Exact`
   because we don't need the changing history events, see https://kubernetes.io/docs/reference/using-api/api-concepts/#semantics-for-watch.
+* Unify query services and DAOs codes time range condition to `Duration`.
+* [**Breaking Change**]: Remove prometheus-fetcher plugin, please use OpenTelemetry to scrape Prometheus metrics and
+  set up SkyWalking OpenTelemetry receiver instead.
+* BugFix: histogram metrics sent to MAL should be treated as OpenTelemetry style, not Prometheus style:
+  ```
+  (-infinity, explicit_bounds[i]] for i == 0
+  (explicit_bounds[i-1], explicit_bounds[i]] for 0 < i < size(explicit_bounds)
+  (explicit_bounds[i-1], +infinity) for i == size(explicit_bounds)
+  ```
+* Add APISIX metrics monitoring
 
 #### UI
 
@@ -49,10 +61,16 @@
 * Remove All from the endpoints selector.
 * Enhance menu configurations to make it easier to change.
 * Update PostgreSQL dashboard to visualize collected slow SQLs.
+* Add gateway apisix menu
+* Query logs with the specific service ID
+* Bump d3-color from 3.0.1 to 3.1.0
 
 #### Documentation
 
 * Add `metadata-uid` setup doc about Kubernetes coordinator in the cluster management.
 * Add a doc for adding menus to booster UI.
+* Move general good read blogs from `Agent Introduction` to `Academy`.
+* Add re-post for blog `Scaling with Apache SkyWalking` in the academy list.
+* Add re-post for blog `Diagnose Service Mesh Network Performance with eBPF` in the academy list.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/149?closed=1)
